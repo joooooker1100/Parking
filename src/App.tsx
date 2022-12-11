@@ -1,18 +1,30 @@
 import * as React from 'react';
+import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import InputBase from '@mui/material/InputBase';
 import './App.css';
-import { Box, TextField } from '@mui/material';
+import { useState } from 'react';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Grow from '@mui/material/Grow';
+import Paper from '@mui/material/Paper';
+import Popper from '@mui/material/Popper';
+import MenuList from '@mui/material/MenuList';
+import { Link } from 'react-router-dom';
+
 interface Ipelak {
   id?: number;
   firstNum?: string;
   secoundNum?: string;
-  Letters?: string;
+  letters?: string;
   cityNum?: string;
+  entranceTime?:string;
+  entryDate?:string;
 }
+const options = ['ورود ساعتی', 'ورود اشتراکی'];
+
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   'label + &': {
@@ -50,68 +62,166 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 
 function App() {
-  const [age, setAge] = React.useState('');
-  const handleChange = (event: { target: { value: string } }) => {
-    setAge(event.target.value);
-  };
-  const [name, setName] = React.useState("");
-  const [secoundName, setsecoundName] = React.useState("");
-  const handleeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-  const handleeeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setsecoundName(event.target.value);
+  const [tab, setTab] = React.useState('');
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTab(newValue);
   };
 
+  
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef<HTMLDivElement>(null);
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const today = Date.now();
+  console.log(today)
+  const handleMenuItemClick = (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    index: number,
+  ) => {
+    setSelectedIndex(index);
+    setOpen(false);
+  };
 
-  console.log(setsecoundName)
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleClose = (event: Event) => {
+    if (
+      anchorRef.current &&
+      anchorRef.current.contains(event.target as HTMLElement)
+    ) {
+      return;
+    }
+
+    setOpen(false);
+  };
+  const [pelakNum, setpelakNum] = useState<Ipelak>({});
+  const [pelak,setPelak]=useState<Ipelak[]>([])
+  console.log(pelakNum)
+  React.useEffect(() => {
+    fetch("/pelak")
+      .then((w) => w.json())
+      .then((w) => setPelak(w));
+  }, []);
+  
   return (
     <div className="App">
+      <div className='button-group'>
+      <ButtonGroup variant="contained" aria-label="outlined primary button group">
+      <Button ><Link className='Link' to='/List'>لیست ورود و خروج</Link></Button>
+      <Button>خرید اشتراک</Button>
+      <Button>تنظیمات</Button>
+    </ButtonGroup>
+
+
+      </div>
+
       <header className="App-header">
-      <Box
-      component="form"
-      sx={{
-        '& > :not(style)': { m: 1, width: '6ch' },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <TextField
-        id="outlined-name"
-        
-        value={name}
-        onChange={handleeChange}
-      />
-      <FormControl sx={{ m: 1 }} variant="standard">
-        <Select
-          labelId="demo-customized-select-label"
-          id="demo-customized-select"
-          value={age}
-          onChange={handleChange}
-          input={<BootstrapInput />}
+
+      
+        <div className='app-pelak'>
+          <img src='pelak.jpg' alt='pelak' style={{height:"60px"}}/>    
+           <input className='input-c' type={'text'} value={pelakNum.firstNum} placeholder={'32'}
+        onChange={(e)=>{setpelakNum({...pelakNum,firstNum:e.target.value})}}/>
+           <input className='input-a' type={"text"} value={pelakNum.letters} placeholder={'الف'}
+          onChange={(e)=>{setpelakNum({...pelakNum,letters:e.target.value})}}/>
+           <input className='input-a' type={'text'} value={pelakNum.secoundNum} placeholder={'674'}
+        onChange={(e)=>{setpelakNum({...pelakNum,secoundNum:e.target.value})}}/>
+
+        </div>
+        <div className='app-pelakcity'>
+           <input className='input-b' type={'text'}value={pelakNum.cityNum} placeholder={'15'}
+        onChange={(e)=>{setpelakNum({...pelakNum,cityNum:e.target.value})}}/>
+        </div>
+ 
+      <div className='app-button'>
+
+
+      <React.Fragment>
+      <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
+        <Button onClick={()=>{if (selectedIndex===0) { if(
+        (pelakNum.firstNum?.length??0)>0 &&
+        (pelakNum.secoundNum?.length??0)>0 &&
+        (pelakNum.letters?.length??0)>0 &&
+        (pelakNum.cityNum?.length??0)>0
+      ){
+        fetch("/pelak",{
+          method:"post",
+          headers:{
+            "content-type":"application/json",
+          },
+          body: JSON.stringify({...pelakNum,
+            entranceTime:today,entryDate:new Date().toLocaleDateString("fa").substr(0, 10)}),
+        })
+        .then((w)=>w.json()).then(()=>setPelak([...pelak]))
+      }
+      setpelakNum({firstNum:'',secoundNum:'',letters:'',cityNum:''});
+          
+        }
+ 
+        if (selectedIndex===1) {
+          alert("dsf");
+        }
+
+        }}>{options[selectedIndex]}</Button>
+        <Button
+          size="small"
+          aria-controls={open ? 'split-button-menu' : undefined}
+          aria-expanded={open ? 'true' : undefined}
+          aria-label="select merge strategy"
+          aria-haspopup="menu"
+          onClick={handleToggle}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={"الف"}>الف</MenuItem>
-          <MenuItem value={"ب"}>ب</MenuItem>
-          <MenuItem value={"پ"}>پ</MenuItem>
-        </Select>
-      </FormControl>
-            <TextField
-        id="outlined-name"
+          <ArrowDropDownIcon />
+        </Button>
+      </ButtonGroup>
+      <Popper
+        sx={{
+          zIndex: 1,
+        }}
+        open={open}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal
+      >
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === 'bottom' ? 'center top' : 'center bottom',
+            }}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList id="split-button-menu" autoFocusItem>
+                  {options.map((option, index) => (
+                    <MenuItem
+                      key={option}
+                      disabled={index === 2}
+                      selected={index === selectedIndex}
+                      onClick={(event) => handleMenuItemClick(event, index)}
+                    >
+                      {option}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+    </React.Fragment>
         
-        value={secoundName}
-        onChange={handleeeChange}
-      />
-            <TextField
-        id="outlined-name"
+          
+
+
         
-        value={name}
-        onChange={handleeChange}
-      />
-    </Box>
-    
+
+      </div>
+
 
       </header>
     </div>

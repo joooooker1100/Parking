@@ -1,7 +1,15 @@
 .App {
   text-align: center;
+  background-image:url('bmw.jpg');
+  min-width:100vh;
+  min-height: 100vh;
+  background-repeat: no-repeat;
 }
-
+@font-face {
+  font-family: "IRANSansWeb";
+  src:url("./fonts/IRANSansWeb(FaNum).woff")format("woff");
+  font-weight: normal;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -12,15 +20,88 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
-.App-header {
-  background-color: #95989c;
-  min-height: 100vh;
+.input-a{
   display: flex;
-  flex-direction: row;
+  width: 56px;
+  font-size: 20px;
+  text-align: center;
+}
+.input-c{
+  display: flex;
+  width: 47px;
+  font-size: 20px;
+  text-align: center;
+}
+.input-b{
+  display: flex;
+  width: 56px;
+  border-radius: 0px 9px 9px 0px;
+  font-size: 20px;
+  text-align: center;
+}
+.App-header {
+  position: fixed;
+  display: flex; 
+  font-size: calc(10px + 2vmin);
+  color: white;
   align-items: center;
   justify-content:center;
-  font-size: calc(10px + 2vmin);
+}
+.app-pelakcity{
+  border: 2px solid rgb(0, 0, 0);
+  display: flex;
+  border-radius: 0px 9px 9px 0px;
+  background-color: aliceblue;
+  margin-top: 587px;
+  height: 60px;
+}
+.app-pelak{
+  background-color: aliceblue;
+  height: 60px;
+  margin-top: 587px;
+  margin-left: 900px;
+  display: flex;
+  border-radius: 9px 0px 0px 9px;
+  border: 2px solid rgb(0, 0, 0);
+}
+.button-group{
+  display: flex;
+  margin-left: 0px;
+}
+.Link{
+  text-decoration: none;
+  color: white;
+}
+.app-button{
+  margin-top: 590px;
+  height: 60px;
+}
+
+.customers {
+  
+  
+  font-family: "IRANSansWeb";
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.customers td, .customers th {
+  text-decoration: rtl;
+  text-align: center;
+  border: 1px solid #ddd;
+  padding: 8px;
+  
+}
+
+.customers tr:nth-child(even){background-color: #f2f2f2;}
+
+.customers tr:hover {background-color: #ddd;}
+
+.customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #04AA6D;
   color: white;
 }
 
