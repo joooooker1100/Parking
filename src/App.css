@@ -20,6 +20,10 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+p{
+  display: flex;
+  text-decoration:double
+}
 .input-a{
   display: flex;
   width: 56px;
@@ -39,6 +43,25 @@
   font-size: 20px;
   text-align: center;
 }
+.input-ae{
+  display: flex;
+  width: 56px;
+  font-size: 20px;
+  text-align: center;
+}
+.input-ce{
+  display: flex;
+  width: 47px;
+  font-size: 20px;
+  text-align: center;
+}
+.input-be{
+  display: flex;
+  width: 56px;
+  border-radius: 0px 9px 9px 0px;
+  font-size: 20px;
+  text-align: center;
+}
 .App-header {
   position: fixed;
   display: flex; 
@@ -47,19 +70,38 @@
   align-items: center;
   justify-content:center;
 }
+.All-pelak {
+  display: flex; 
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
 .app-pelakcity{
   border: 2px solid rgb(0, 0, 0);
   display: flex;
   border-radius: 0px 9px 9px 0px;
   background-color: aliceblue;
-  margin-top: 587px;
   height: 60px;
+  margin-top: 587px;
 }
 .app-pelak{
   background-color: aliceblue;
   height: 60px;
+  display: flex;
+  border-radius: 9px 0px 0px 9px;
+  border: 2px solid rgb(0, 0, 0);
   margin-top: 587px;
   margin-left: 900px;
+}
+.app-pelakcitye{
+  border: 2px solid rgb(0, 0, 0);
+  display: flex;
+  border-radius: 0px 9px 9px 0px;
+  background-color: aliceblue;
+  height: 60px;
+}
+.app-pelake{
+  background-color: aliceblue;
+  height: 60px;
   display: flex;
   border-radius: 9px 0px 0px 9px;
   border: 2px solid rgb(0, 0, 0);

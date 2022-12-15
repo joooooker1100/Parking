@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import List from './List';
+import Eshterak from './Eshterak';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -13,6 +14,7 @@ root.render(
     <Routes>     
       <Route path="/" element={<App />} />
       <Route path="/List" element={<List />} />
+      <Route path="/Eshterak" element={<Eshterak />} />
     </Routes>
   </BrowserRouter>
 );
