@@ -79,7 +79,7 @@ function App() {
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const today = Date.now();
-  console.log(today)
+
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     index: number,
@@ -105,8 +105,7 @@ function App() {
   const [pelakNum, setpelakNum] = useState<Ipelak>({});
   const [pelak,setPelak]=useState<Ipelak[]>([])
   const [eshterak, setEshterak] = useState<Ipelak>({});
-  const [moshtarak,setMoshtarak]=useState<IEshterak[]>([])
-  console.log(pelakNum)
+  const [moshtarak,setMoshtarak]=useState<IEshterak[]>([]);
   React.useEffect(() => {
     fetch("/pelak")
       .then((w) => w.json())
@@ -117,28 +116,28 @@ function App() {
       .then((w) => w.json())
       .then((w) => setMoshtarak(w));
   }, []);
-  function pelakfirst(e:any) {
+  function pelakFirst(e:any) {
     setpelakNum({...pelakNum,firstNum:e.target.value})
   }
-  function moshtarakfirst(e:any) {
-    setEshterak({...eshterak,firstNum:e.target.value})
-  }
-  function pelakletters(e:any) {
+  function pelakLetters(e:any) {
     setpelakNum({...pelakNum,letters:e.target.value})
   }
-  function moshtarakletters(e:any) {
-    setEshterak({...eshterak,letters:e.target.value})
-  }
-  function pelaksecound(e:any) {
+  function pelakSecound(e:any) {
     setpelakNum({...pelakNum,secoundNum:e.target.value})
   }
-  function moshtaraksecound(e:any) {
-    setEshterak({...eshterak,secoundNum:e.target.value})
-  }
-  function pelakcity(e:any) {
+  function pelakCity(e:any) {
     setpelakNum({...pelakNum,cityNum:e.target.value})
   }
-  function moshtarakcity(e:any) {
+  function moshtarakFirst(e:any) {
+    setEshterak({...eshterak,firstNum:e.target.value})
+  }
+  function moshtarakLetters(e:any) {
+    setEshterak({...eshterak,letters:e.target.value})
+  }
+  function moshtarakSecound(e:any) {
+    setEshterak({...eshterak,secoundNum:e.target.value})
+  }
+  function moshtarakCity(e:any) {
     setEshterak({...eshterak,cityNum:e.target.value})
   }
   return (
@@ -154,15 +153,16 @@ function App() {
         <div className='app-pelak'>
           <img src='pelak.jpg' alt='pelak' style={{height:"60px"}}/>    
            <input className='input-c' type={'text'} value={pelakNum.firstNum} placeholder={'32'}
-        onChange={(e)=>{pelakfirst(e);moshtarakfirst(e)}}/>
+        onChange={(e)=>{pelakFirst(e);moshtarakFirst(e)
+        }}/>
            <input className='input-a' type={"text"} value={pelakNum.letters} placeholder={'الف'}
-          onChange={(e)=>{pelakletters(e);moshtarakletters(e)}}/>
+          onChange={(e)=>{pelakLetters(e);moshtarakLetters(e)}}/>
            <input className='input-a' type={'text'} value={pelakNum.secoundNum} placeholder={'674'}
-        onChange={(e)=>{pelaksecound(e);moshtaraksecound(e)}}/>
+        onChange={(e)=>{pelakSecound(e);moshtarakSecound(e)}}/>
         </div>
         <div className='app-pelakcity'>
            <input className='input-b' type={'text'}value={pelakNum.cityNum} placeholder={'15'}
-        onChange={(e)=>{pelakcity(e);moshtarakcity(e)}}/>
+        onChange={(e)=>{pelakCity(e);moshtarakCity(e)}}/>
         </div>
       <div className='app-button'>
       <React.Fragment>
@@ -185,10 +185,19 @@ function App() {
       }
       setpelakNum({firstNum:'',secoundNum:'',letters:'',cityNum:''});
         }
+
+
         if (selectedIndex===1) {
-          moshtarak.map((e)=>{
-            if ( e.firstNum === eshterak.firstNum && e.letters === eshterak.letters && e.secoundNum === eshterak.secoundNum && e.cityNum === eshterak.cityNum ) {
-              if (e.exp! > today) {
+          const result = moshtarak.filter((e)=>{
+            return e.firstNum === eshterak.firstNum && e.letters === eshterak.letters && e.secoundNum === eshterak.secoundNum && e.cityNum === eshterak.cityNum 
+            
+          })
+          const resultExp= result.filter((e)=>{
+            return  (e.exp??0) > today
+          })
+          console.log(result)
+          console.log(resultExp)
+              if (result.length === 1 && resultExp.length === 1) {
                 
                 fetch("/pelak",{
                   method:"post",
@@ -199,17 +208,17 @@ function App() {
                     entranceTime:today,entryDate:new Date().toLocaleDateString("fa").substr(0, 10),eshterak:"دارد"}),
                 }).then((w)=>w.json()).then(()=>setPelak([...pelak]))
               }
-              else{
-                window.alert("اشتراک شما به اتمام رسیده است")
-              }
-              }
-              else{
-                window.alert("پلاک خودرو جز مشترکین نمیباشد")  
-              }
-            }
-          )
-        }
-        }}>{options[selectedIndex]}</Button>
+              else if(result.length === 0){
+                
+                window.alert("پلاک مورد نظر جزیی از خانواده ما نمیباشد")
+              }  
+              else if(result.length === 1 && resultExp.length === 0 ){
+                
+                window.alert("اشتراک پلاک مورد نظر به اتمام رسیده است")
+              }  
+          
+        }}}
+        >{options[selectedIndex]}</Button>
         <Button
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}

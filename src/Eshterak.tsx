@@ -8,7 +8,7 @@ interface IEshterak{
     nameLastename?:string;
     kodMeli?:string;
     mobile?:string;
-    exp?:string;
+    exp?:Number;
 }
 export default function Eshterak() {
     const [moshtarak,setMoshtarak]=useState<IEshterak[]>([])
@@ -33,7 +33,8 @@ export default function Eshterak() {
             <input placeholder="نام و نام خانوادگی" value={moshtarakin.nameLastename} onChange={(e)=>{setMoshtarakin({...moshtarakin,nameLastename:e.target.value})}}/>
             <input placeholder=" کد ملی" value={moshtarakin.kodMeli} onChange={(e)=>{setMoshtarakin({...moshtarakin,kodMeli:e.target.value})}}/>
             <input placeholder="شماره تماس"value={moshtarakin.mobile} onChange={(e)=>{setMoshtarakin({...moshtarakin,mobile:e.target.value})}}/>
-            <input placeholder=":اعتبار تا تاریخ" type={"date"} id="date_value" name="date_end" value={moshtarakin.exp} onChange={(e)=>{setMoshtarakin({...moshtarakin,exp:e.target.value })}} />         
+            <input placeholder=":اعتبار تا تاریخ" type={"date"} id="date_value" name="date_end"  onChange={(e)=>{const b =new Date(e.target.value).valueOf()
+              setMoshtarakin({...moshtarakin,exp:b})}} />         
             <button onClick={()=>{
 fetch("/eshtraks",{
     method:"post",
