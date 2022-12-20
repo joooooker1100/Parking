@@ -13,6 +13,8 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuList from '@mui/material/MenuList';
 import { Link } from 'react-router-dom';
+import exp from 'constants';
+
 
 interface Ipelak {
   id?: number;
@@ -22,7 +24,9 @@ interface Ipelak {
   cityNum?: string;
   entranceTime?:string;
   entryDate?:string;
-  eshterak?:string
+  eshterak?:string;
+  EXP?:number
+
 }
 interface IEshterak{
   id?:number;
@@ -190,34 +194,36 @@ function App() {
         if (selectedIndex===1) {
           const result = moshtarak.filter((e)=>{
             return e.firstNum === eshterak.firstNum && e.letters === eshterak.letters && e.secoundNum === eshterak.secoundNum && e.cityNum === eshterak.cityNum 
+      
             
           })
-          const resultExp= result.filter((e)=>{
-            return  (e.exp??0) > today
-          })
           console.log(result)
-          console.log(resultExp)
-              if (result.length === 1 && resultExp.length === 1) {
-                
-                fetch("/pelak",{
-                  method:"post",
-                  headers:{
-                    "content-type":"application/json",
-                  },
-                  body: JSON.stringify({...pelakNum,
-                    entranceTime:today,entryDate:new Date().toLocaleDateString("fa").substr(0, 10),eshterak:"دارد"}),
-                }).then((w)=>w.json()).then(()=>setPelak([...pelak]))
-              }
-              else if(result.length === 0){
-                
-                window.alert("پلاک مورد نظر جزیی از خانواده ما نمیباشد")
-              }  
-              else if(result.length === 1 && resultExp.length === 0 ){
-                
-                window.alert("اشتراک پلاک مورد نظر به اتمام رسیده است")
-              }  
-          
-        }}}
+          if (result.length===1) {
+            
+            if (result[0]!.exp! > today) {
+              
+              fetch("/pelak",{
+                method:"post",
+                headers:{
+                  "content-type":"application/json",
+                },
+                body: JSON.stringify({...pelakNum,
+                  entranceTime:today,entryDate:new Date().toLocaleDateString("fa").substr(0, 10),eshterak:"دارد"}),
+              }).then((w)=>w.json()).then(()=>setPelak([...pelak]))
+            }
+            else if((result[0]!).exp!< today){
+              window.alert("اشتراک پلاک مورد نظر به اتمام رسیده است")
+              
+              
+            } 
+          }
+         else {
+          window.alert("پلاک مورد نظر جزیی از خانواده ما نمیباشد")
+
+         }
+   
+        }  
+ }}
         >{options[selectedIndex]}</Button>
         <Button
           size="small"

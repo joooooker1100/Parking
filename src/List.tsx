@@ -9,18 +9,39 @@ interface IList{
     entryDate?:string;
     eshterak?:string
 }
+interface IEshterak{
+  id?:number;
+  firstNum?:string;
+  letters?:string;
+  secoundNum?:string;
+  cityNum?:string;
+  nameLastename?:string;
+  kodMeli?:string;
+  mobile?:string;
+  exp?:Number;
+}
 export default function List() {
+
+  useEffect(() => {
+      fetch("/pelak")
+        .then((w) => w.json())
+        .then((w) => setList(w));
+    }, []);
+    useEffect(() => {
+      fetch("/eshtraks")
+        .then((w) => w.json())
+        .then((w) => setMoshtarak(w));
+    }, []);
+
     const[list,setList]=useState<IList[]>([]);
+    const [moshtarak,setMoshtarak]=useState<IEshterak[]>([])
     const today = Date.now();
     const hazinehVorod=50000;
     const hazinehHarsaat=40000;
-    useEffect(() => {
-        fetch("/pelak")
-          .then((w) => w.json())
-          .then((w) => setList(w));
-      }, []);
+
     return(
         <div>
+        
 <table className="customers">
   <tr>
     <th>پلاک خودرو</th>
@@ -38,37 +59,67 @@ return(
     <td>{e.eshterak}</td>
     
     <td  onClick={()=>{
-      if (window.confirm("آیا مطمئن هستید؟") === true) {
-        
-        fetch(`/pelak/${e.id}`, {
-         method: "delete",
-         headers: {
-           "content-type": "application/json",
-         },
-         body: JSON.stringify(list),
-       })
-         .then((w) => w.json())
-         .then((w) => {
-           list.splice(index, 1);
-           setList([...list]);
-         });
+      if(e.eshterak === "ندارد"){
+
+
+        if (window.confirm("آیا مطمئن هستید؟") === true) {
+          
+          fetch(`/pelak/${e.id}`, {
+           method: "delete",
+           headers: {
+             "content-type": "application/json",
+           },
+           body: JSON.stringify(list),
+         })
+           .then((w) => w.json())
+           .then((w) => {
+             list.splice(index, 1);
+             setList([...list]);
+           });
+        }
+        if (
+          (today-(e.entranceTime ?? 0))<3600000
+        ) {
+          window.confirm("هزینه شما"+hazinehVorod+"ریال میباشد")
+        }
+        if ((today-(e.entranceTime ?? 0))>3600000) {
+          const math = Math.floor((today-(e.entranceTime ?? 0))*(hazinehHarsaat/3600000))
+          window.alert(math)
+        }
       }
-      if (
-        (today-(e.entranceTime ?? 0))<3600000
-      ) {
-        window.confirm("هزینه شما"+hazinehVorod+"ریال میباشد")
-      }
-      if ((today-(e.entranceTime ?? 0))>3600000) {
-        window.alert((today-(e.entranceTime ?? 0))*(hazinehHarsaat/3600000))
+      else if (e.eshterak=== "دارد"){
+        if (window.confirm("آیا مطمئن هستید؟") === true) {
+          const mohasebehEshterak =moshtarak.forEach(()=>{
+            return(
+      
+              
+            )
+          })
+          fetch(`/pelak/${e.id}`, {
+           method: "delete",
+           headers: {
+             "content-type": "application/json",
+           },
+           body: JSON.stringify(list),
+         })
+           .then((w) => w.json())
+           .then((w) => {
+             list.splice(index, 1);
+             setList([...list]);
+           });
+           console.log(mohasebehEshterak)
+           
+           
+        }
+
       }
     }}>خروج</td>
   </tr>
 )
   })
   }
-</table>
-            
-        </div>
+</table>     
+ </div>
     )
     
 }
